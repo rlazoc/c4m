@@ -20,6 +20,23 @@ async function connect() {
 
 connect();
 
+const userSchema = new mongoose.Schema ({
+    username: String,
+    password: String
+  });
+
+const User = mongoose.model('User', userSchema);
+
+const user = new User ({
+  username: 'a',
+  password: '12345'
+});
+
+user.save((error) => {
+  if (error) throw error;
+  console.log('User has been saved to the database.');
+});
+
 app.get('/', (req, res) => {
   res.send('Connected!');
 });
