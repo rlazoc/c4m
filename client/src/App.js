@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import axios from 'axios';
+
 import './App.css';
 
 function App() {
@@ -14,10 +16,21 @@ function App() {
     setPassword(event.target.value);
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    axios.post('http://localhost:3000', {username, password})
+    .then((response) => {
+        console.log(response);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+  };
+
   return (
   <div className="App">
     <h1>Connect4</h1>
-    <form>
+    <form onSubmit={handleSubmit}>
       <label>
         Username:&nbsp;
         <input type="text" value={username} onChange={handleUsernameChange} />
