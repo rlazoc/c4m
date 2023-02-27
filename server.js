@@ -3,6 +3,10 @@ require('dotenv').config({ path: '.env.local' });
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const cors = require('cors');
+
+app.use(cors());
+app.use(express.json());
 
 const uri = process.env.MONGO_URI;
 
@@ -28,17 +32,32 @@ const userSchema = new mongoose.Schema ({
 const User = mongoose.model('User', userSchema);
 
 const user = new User ({
-  username: 'a',
+  username: 'b',
   password: '12345'
 });
 
 user.save((error) => {
   if (error) throw error;
-  console.log('User has been saved to the database.');
+  console.log('User saved to the database (strict)');
 });
 
 app.get('/', (req, res) => {
   res.send('Connected!');
+});
+
+app.post('/', (req, res) => {
+  const {username, password} = req.body;
+  const user = new User({
+    username,
+    password
+  });
+  user.save((error) => {
+    if (error) {
+      res.status(500).send(error);
+    } else {
+      res.send('User saved to the database (api)');
+    }
+  });
 });
 
 app.listen(3000, () => {
